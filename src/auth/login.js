@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
-import {Redirect, Link} from 'react-router-dom';
-import InputLabel from '@material-ui/core/InputLabel';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Container from '@material-ui/core/Container';
+import {Redirect} from 'react-router-dom';
+
 
 
 class Login extends Component {
@@ -37,33 +34,36 @@ class Login extends Component {
       }
 
 
-      const userPass = (e) => {
-          this.setState({password: e.target.value});
-      }
+    const userPass = (e) => {
+        this.setState({password: e.target.value});
+    }
 
-
-      if(this.state.auth === true){
+    if(this.state.auth === true){
         return <Redirect to={{
           pathname: '/dashboard',
           state: this.state.username
           }}/>
-      }
+    }
 
 
     return (
-      <Container maxWidth="xs">
-        <h1 align="center">
-          Sign in
-        </h1>
-                <InputLabel htmlFor="username">Username</InputLabel>
-                <TextField onChange={userInput}type="text" className="form-control" id="username" />
-                <InputLabel htmlFor="password">Password</InputLabel>
-                <TextField  onChange={userPass} type="text" className="form-control" id="password" />
-                <Button type="submit" fullWidth color="primary" variant="contained" onClick={loginReq}>Log in</Button>
-              <p>
-                If you forget your login info, contact system admin.
+      <div className="containerc" >
+        <div className="logincard">
+        <p className="loginheader">
+          Sign in to your account
+        </p>
+        <hr></hr>
+              <input className="usernamebox" onChange={userInput}type="text" id="username" placeholder="Username" />
+              <input className="passwordbox" onChange={userPass} type="text" id="password" placeholder="Password" />
+              <div className="buttoncontainer">  
+                <button className="loginbutton" type="submit" color="primary" variant="contained" onClick={loginReq}>Log in</button>
+                <button className="loginbutton" type="submit" color="primary" variant="contained" onClick={loginReq}>Guest Login</button>
+              </div>
+              <p className="disclaimer">
+                Login with = User: guest || Password: guest
               </p>
-            </Container>
+        </div>
+        </div>
   );
   }
 }

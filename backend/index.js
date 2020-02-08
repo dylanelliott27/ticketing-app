@@ -13,7 +13,7 @@ var database, collection, ticketCollection;
 
 app.listen(8081, () => {
     console.log("server running on 8081")
-    MongoClient.connect(process.env.DATABASE_KEY, {useNewUrlParser: true}, (err, client) =>{
+    MongoClient.connect(process.env.DB_LOGIN, {useNewUrlParser: true}, (err, client) =>{
         if (err) throw err;
         database = client.db(DATABASE_NAME);
         collection = database.collection("users");
@@ -40,9 +40,17 @@ app.use(bodyParser.json())
 
 app.post('/addticket', (req, res) => {
     const ticketInfo = {name: req.body.name, description: req.body.description}
-    ticketCollection.insertOne(ticketInfo, (err, res) => {
+    ticketCollection.count().then((count) => {
+        if(count >= 5){
+            res.send("You can not open more than 5 tickets right now.");
+            console.log("nope");
+        }
+        else{
+            ticketCollection.insertOne(ticketInfo, (err, res) => {
+            })
+            res.send(ticketInfo);
+        }
     })
-    res.send(ticketInfo);
 })
 app.get('/', (req, res) => {
     getTickets();
@@ -66,8 +74,8 @@ app.post('/loginrequest', (req, res) =>{
         if(user){
 
             if(user.password == info.password){
-                var token = jwt.sign({username: info.username}, 'test');
-                res.cookie('jwt', token, {httpOnly: true, maxAge: 100000})
+                var token = jwt.sign({username: info.username}, process.env.JWT_SECRET);
+                res.cookie('jwt', token, {maxAge: 1000000})
                 res.status(200).send("Cookie gen");
             }
             else if(user.password !== info.password){
@@ -79,7 +87,7 @@ app.post('/loginrequest', (req, res) =>{
 
 
 app.get('/authentication', (req, res) => {
-   jwt.verify(req.cookies.jwt, 'test', (err, verified) => {
+   jwt.verify(req.cookies.jwt, process.env.JWT_SECRET, (err, verified) => {
        if(verified){
            console.log(verified);
            res.status(200).send(verified);

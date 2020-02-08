@@ -1,22 +1,19 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
-import axios from 'axios';
+
 class Tickets extends Component{
     constructor(props){
         super(props);
-
-     
     }
     
     render()
     {
-        console.log(this.props.tickets)
         return(
             <div className="container">
                 {this.props.tickets === null && <p>loading</p>}
                 <table className="table">
                     <thead>
-                        <tr>
+                        <tr className="underline">
                             <th scope="col">Name</th>
                             <th scope="description">Description</th>
                             <th scope="view">View ticket</th>
@@ -25,18 +22,17 @@ class Tickets extends Component{
                     </thead>
                     <tbody>
                         {this.props.tickets && this.props.tickets.map(ticket => (
-                            <tr key={ticket._id}>    
-                                <td>{ticket.name}</td>
+                            <tr className="datatr" key={ticket._id}>    
+                                <td className="firsttd">{ticket.name}</td>
                                 <td>{ticket.description}</td>
                                 <td>
                                         <Link to=
                                         {{pathname: "/tickets/"+ticket._id,
-                                        state: ticket}}>
-                                        View</Link>
+                                        state: ticket, user: this.props}}  style={{color: 'black'}}>
+                                        <i className="fas fa-folder-open"></i></Link>
                                 </td>
-                                <td>
-                                
-                                        <button onClick={async() => await this.props.deleteItem(ticket)}>X</button>
+                                <td className="lasttd">
+                                <i className="fas fa-trash-alt" onClick={async() => await this.props.deleteItem(ticket)}></i>
                                 </td>
                             </tr>
                     ))}
